@@ -1,0 +1,37 @@
+Write a SQL query to find all numbers that appear at least three times consecutively.
+
++----+-----+
+| Id | Num |
++----+-----+
+| 1  |  1  |
+| 2  |  1  |
+| 3  |  1  |
+| 4  |  2  |
+| 5  |  1  |
+| 6  |  2  |
+| 7  |  2  |
++----+-----+
+For example, given the above Logs table, 1 is the only number that appears consecutively for at least three times.
+
++-----------------+
+| ConsecutiveNums |
++-----------------+
+| 1               |
++-----------------+
+
+
+# Write your MySQL query statement below
+select distinct a.Num as ConsecutiveNums 
+from
+(
+    select t.Num,    #此处变量连接用逗号分隔开
+    @cnt:=if(@pre=t.Num,@cnt+1,1) as cnt, #if语句，用来让cnt赋值增加或者是重新启动一个新的值
+    @pre:=t.Num as pre
+    from Logs t,(Select @pre:=null,@cnt:=1) as first)   #as first之前的语句是用来搞定初始化的，相当于让pre和cnt初始化，同时不能忘了@cnt的
+    #@pre:告诉我们此时，pre是一个user-variable not defined by tables but by users
+    as a 
+    where a.cnt>=3
+    
+   
+
+
